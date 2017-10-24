@@ -136,7 +136,7 @@ class CompatCheckWP
         if ( !self::isCompatible() ) {
             return self::incompatible();
         } else if ( is_callable($callback) ) {
-            if ( $args && is_array($args) ) {
+            if ( $args ) {
                 return call_user_func_array($callback, (array) $args);
             } else {
                 return call_user_func($callback);

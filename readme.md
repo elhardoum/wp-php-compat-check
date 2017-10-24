@@ -18,7 +18,7 @@ require_once 'wp-php-compat-check/wp-php-compat-check.php';
 composer require "elhardoum/wp-php-compat-check:*@dev"
 ```
 
-Then, make sure to copy all of your main file code (except the plugin header comments of course, into the `then` method):
+Then, make sure to copy all of your main file code (except the plugin header comments of course) into the `then` method:
 
 ```php
 CompatCheckWP::check(
