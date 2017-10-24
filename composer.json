@@ -10,10 +10,9 @@
     ],
     "minimum-stability": "stable",
     "require": {
-        "php": ">=5.0",
-        "elhardoum/wp-php-compat-check": "dev-master"
+        "php": ">=5.0"
     },
     "autoload": {
-        "classmap": ["wp-php-compat-check.php"]
+        "files": ["wp-php-compat-check.php"]
     }
 }
