@@ -4,7 +4,7 @@ Helps check PHP and WordPress compatibility before running the plugin.
 
 You can wrap your main WordPress plugin code in this helper, and specify which minimum PHP version your plugin should run on, and also optionally which WordPress version to require as a minimum, and then the plugin should work with no fatal errors if all checks are met and the environment is compatible.
 
-This plugin should be working for multisite environments as well.
+This helper requires PHP 5.0 at least, and should be working for multisite environments as well.
 ## Usage:
 
 In your main plugin file, e.g `wp-content/plugins/my-plugin/my-plugin.php`, require this compat class:
@@ -91,6 +91,17 @@ CompatCheckWP::check(array(
     'deactivate_incompatible' => true,
     'wp_version' => 4.2,
 ))->then('my_plugin_runs_here');
+```
+
+One last example, if you don't want to use `then` method, there's `isCompatible` to get you covered:
+```php
+$is_compatible = CompatCheckWP::check(array(
+    'php_version' => 7.0,
+    'deactivate_incompatible' => true,
+    'wp_version' => 4.2,
+))->isCompatible();
+
+if ( $is_compatible ) { /* ... */ }
 ```
 
 ## Options:

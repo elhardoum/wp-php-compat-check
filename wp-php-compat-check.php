@@ -27,6 +27,7 @@ class CompatCheckWP
     const ARG_PLUGIN_FILE = 'plugin_file';
     const ARG_PHPVER_OPERATOR = 'php_version_operator';
     const ARG_WPVER_OPERATOR = 'wp_version_operator';
+    const CLASSNAME = 'CompatCheckWP'; // self::class alt for PHP < 5.5
 
     protected static $phpVersion;
     protected static $wpVersion;
@@ -152,9 +153,9 @@ class CompatCheckWP
     private static function incompatible()
     {
         if ( self::isNetworkActive() ) {
-            add_action('network_admin_notices', array('CompatCheckWP', 'errorNotice'), 999);
+            add_action('network_admin_notices', array(self::CLASSNAME, 'errorNotice'), 999);
         } else {
-            add_action('admin_notices', array('CompatCheckWP', 'errorNotice'), 999);
+            add_action('admin_notices', array(self::CLASSNAME, 'errorNotice'), 999);
         }
 
         if ( self::$deactivateIncompatible ) {
