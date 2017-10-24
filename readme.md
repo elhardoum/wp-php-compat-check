@@ -39,11 +39,11 @@ defined ( 'ABSPATH' ) || exit ( 'Direct access not allowed.' . PHP_EOL );
 
 require_once 'wp-php-compat-check/wp-php-compat-check.php';
 
-CompatCheckWP::check([
+CompatCheckWP::check(array(
     'php_version' => 7.0,
     'deactivate_incompatible' => true,
     'wp_version' => 4.2,
-])->then(function(){
+))->then(function(){
     $GLOBALS['feed_ignore_categories'] = array( 
         // [...]
     );
@@ -80,16 +80,16 @@ function my_plugin_runs_here() {
 
 require_once 'wp-php-compat-check/wp-php-compat-check.php';
 
-CompatCheckWP::check([
+CompatCheckWP::check(array(
     'php_version' => 7.0,
     'deactivate_incompatible' => true,
     'wp_version' => 4.2,
-])->then('my_plugin_runs_here');
+))->then('my_plugin_runs_here');
 ```
 
 ## Options:
 
-The following are called options, which you can pass to the `check` method of the `CompatCheckWP` class (`CompatCheckWP::check(Array $args)`):
+The following are called options, which you can pass to the `check` method of the `CompatCheckWP` class (`CompatCheckWP::check( array( ...options ) )`):
 
 **`php_version`**: The minimum PHP version your plugin should work with, if needed.
 
