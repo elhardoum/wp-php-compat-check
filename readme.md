@@ -89,7 +89,7 @@ CompatCheckWP::check([
 
 ## Options:
 
-These are the arguments you can pass to the `check` method:
+The following are called options, which you can pass to the `check` method of the `CompatCheckWP` class (`CompatCheckWP::check(Array $args)`):
 
 **`php_version`**: The minimum PHP version your plugin should work with, if needed.
 
