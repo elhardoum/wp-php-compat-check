@@ -99,7 +99,8 @@ These are the arguments you can pass to the `check` method:
 
 **`error_message`**: Customize the incompatibility error message. It defaults to: *The following plugin could not be activated due to a compatibility error: plugin-name/plugin-name.php. [PHP >= XX: ✓, WP >= XX: ×]*
 
-**`plugin_file`**: Optional, pass a string of the plugin file in the format of this function return: [`plugin_basename`](https://codex.wordpress.org/Function_Reference/plugin_basename). If you are calling the class from the main plugin file and not passing this argument, then the plugin file will be programatically extracted from the debug backtrace, otherwise if calling from another file then it would certainly fail and you'll want to pass in this argument. 
+**`plugin_file`**: Optional, pass a string of the plugin file in the format of this function return: [`plugin_basename`](https://codex.wordpress.org/Function_Reference/plugin_basename) (e.g `'plugin_file' => plugin_basename(MY_PLUGIN_FILE)
+`). If you are calling the class from the main plugin file and not passing this argument, then the plugin file will be programatically extracted from the debug backtrace, otherwise if calling from another file then it would certainly fail and you'll want to pass in this argument.
 
 **`php_version_operator`**: The operator by default is `>=` for checking the PHP version requirement.
 
