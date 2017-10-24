@@ -13,6 +13,11 @@ In your main plugin file, e.g `wp-content/plugins/my-plugin/my-plugin.php`, requ
 require_once 'wp-php-compat-check/wp-php-compat-check.php';
 ```
 
+**For composer users:**
+```bash
+composer require "elhardoum/wp-php-compat-check:*@dev"
+```
+
 Then, make sure to copy all of your main file code (except the plugin header comments of course, into the `then` method):
 
 ```php
