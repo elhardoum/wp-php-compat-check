@@ -13,7 +13,7 @@ In your main plugin file, e.g `wp-content/plugins/my-plugin/my-plugin.php`, requ
 require_once 'wp-php-compat-check/wp-php-compat-check.php';
 ```
 
-**For composer users:**
+*For composer users:*
 ```bash
 composer require "elhardoum/wp-php-compat-check:*@dev"
 ```
