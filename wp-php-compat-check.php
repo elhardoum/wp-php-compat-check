@@ -74,9 +74,9 @@ class CompatCheckWP
 
         if ( isset($args[self::ARG_PLUGIN_FILE]) && $args[self::ARG_PLUGIN_FILE] ) {
             self::$pluginFile = esc_attr($args[self::ARG_PLUGIN_FILE]);
-        } else if ( isset(debug_backtrace()[1]['file']) ) {
-            $file = debug_backtrace()[1]['file'];
-            self::$pluginFile = basename(dirname($file)) . DIRECTORY_SEPARATOR . basename($file);
+        } else {
+            $backtrace = debug_backtrace();
+            self::$pluginFile = basename(dirname($backtrace[1]['file'])) . DIRECTORY_SEPARATOR . basename($backtrace[1]['file']);
         }
 
         if ( isset($args[self::ARG_ERR_MSG]) && $args[self::ARG_ERR_MSG] ) {
@@ -152,9 +152,9 @@ class CompatCheckWP
     private static function incompatible()
     {
         if ( self::isNetworkActive() ) {
-            add_action('network_admin_notices', array(self::class, 'errorNotice'), 999);
+            add_action('network_admin_notices', array('CompatCheckWP', 'errorNotice'), 999);
         } else {
-            add_action('admin_notices', array(self::class, 'errorNotice'), 999);
+            add_action('admin_notices', array('CompatCheckWP', 'errorNotice'), 999);
         }
 
         if ( self::$deactivateIncompatible ) {
