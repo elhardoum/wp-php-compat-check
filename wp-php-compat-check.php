@@ -15,7 +15,7 @@ if ( class_exists('CompatCheckWP') ) {
   * @link http://github.com/elhardoum/wp-php-compat-check
   * @link https://samelh.com
   * @license GPL-3.0
-  * @see http://github.com/elhardoum/wp-php-compat-check
+  * @see https://github.com/elhardoum/wp-php-compat-check/blob/master/readme.md
   */
 
 class CompatCheckWP
