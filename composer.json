@@ -1,11 +1,13 @@
 {
     "name": "elhardoum/wp-php-compat-check",
+    "type": "library",
     "description": "Helps check PHP and WordPress compatibility before running the plugin.",
     "license": "GPL-3.0",
     "authors": [
         {
             "name": "elhardoum",
-            "email": "elhardoumar@gmail.com"
+            "email": "elhardoumar@gmail.com",
+            "homepage": "https://samelh.com"
         }
     ],
     "minimum-stability": "stable",
