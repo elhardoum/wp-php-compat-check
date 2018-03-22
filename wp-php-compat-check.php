@@ -11,10 +11,10 @@ if ( class_exists('CompatCheckWP') ) {
   * before running the plugin.
   *
   * @author Samuel Elh <samelh.com/contact>
-  * @version 0.1
+  * @version 0.2
   * @link http://github.com/elhardoum/wp-php-compat-check
   * @link https://samelh.com
-  * @license GPL-3.0
+  * @license GPLv2 or later
   * @see https://github.com/elhardoum/wp-php-compat-check/blob/master/readme.md
   */
 
@@ -27,7 +27,7 @@ class CompatCheckWP
     const ARG_PLUGIN_FILE = 'plugin_file';
     const ARG_PHPVER_OPERATOR = 'php_version_operator';
     const ARG_WPVER_OPERATOR = 'wp_version_operator';
-    const CLASSNAME = 'CompatCheckWP'; // self::class alt for PHP < 5.5
+    const ARG_TEXTDOMAIN = 'textdomain';
 
     protected static $phpVersion;
     protected static $wpVersion;
@@ -42,6 +42,7 @@ class CompatCheckWP
     private static $phpVersion_check = true;
     private static $wpVersion_check = true;
     private static $isNetworkActive;
+    private static $textdomain;
 
     public static function getInstance()
     {
@@ -56,7 +57,15 @@ class CompatCheckWP
 
     public static function check($args)
     {
-        return self::parseArgs((array) $args)->verify();
+        // parse user arguments
+        self::parseArgs((array) $args)->verify();
+
+        // load default textdomain
+        if ( ! isset( self::$textdomain ) && false === has_action('plugins_loaded', array(__CLASS__, 'i18n')) ) {
+            add_action('plugins_loaded', array(__CLASS__, 'i18n'));
+        }
+
+        return self::getInstance();
     }
 
     private static function parseArgs($args)
@@ -92,6 +101,10 @@ class CompatCheckWP
             self::$WPVersionOperator = $args[self::ARG_WPVER_OPERATOR];
         }
 
+        if ( isset($args[self::ARG_TEXTDOMAIN]) && $args[self::ARG_TEXTDOMAIN] ) {
+            self::$textdomain = $args[self::ARG_TEXTDOMAIN];
+        }
+
         return self::getInstance();
     }
 
@@ -125,7 +138,7 @@ class CompatCheckWP
 
     private static function getUserWpVersion()
     {
-        if ( !isset(self::$wp_version) ) {
+        if ( ! isset(self::$wp_version) ) {
             self::$wp_version = get_bloginfo('version');
         }
 
@@ -134,7 +147,7 @@ class CompatCheckWP
 
     public static function then($callback, $args=null)
     {
-        if ( !self::isCompatible() ) {
+        if ( ! self::isCompatible() ) {
             return self::incompatible();
         } else if ( is_callable($callback) ) {
             if ( $args ) {
@@ -153,13 +166,13 @@ class CompatCheckWP
     private static function incompatible()
     {
         if ( self::isNetworkActive() ) {
-            add_action('network_admin_notices', array(self::CLASSNAME, 'errorNotice'), 999);
+            add_action('network_admin_notices', array(__CLASS__, 'errorNotice'), 999);
         } else {
-            add_action('admin_notices', array(self::CLASSNAME, 'errorNotice'), 999);
+            add_action('admin_notices', array(__CLASS__, 'errorNotice'), 999);
         }
 
         if ( self::$deactivateIncompatible ) {
-            if ( !function_exists('deactivate_plugins') ) {
+            if ( ! function_exists('deactivate_plugins') ) {
                 require_once(ABSPATH . 'wp-admin/includes/plugin.php');
             }
 
@@ -171,8 +184,8 @@ class CompatCheckWP
 
     public static function isNetworkActive()
     {
-        if ( !isset(self::$isNetworkActive) ) {
-            if ( !is_multisite() ) {
+        if ( ! isset(self::$isNetworkActive) ) {
+            if ( ! is_multisite() ) {
                 self::$isNetworkActive = false;
             } else {
                 $plugins = get_site_option( 'active_sitewide_plugins', array() );
@@ -186,7 +199,7 @@ class CompatCheckWP
     private static function setDynamicErrorMessage()
     {
         self::$errorMessage = sprintf(
-            'The following plugin could not be activated due to a compatibility error: <strong>%s</strong>.',
+            __('The following plugin could not be activated due to a compatibility error: <strong>%s</strong>.', self::getTextDomain()),
             self::$pluginFile
         );
 
@@ -194,24 +207,28 @@ class CompatCheckWP
 
         if ( self::$phpVersion ) {
             $list []= sprintf(
-                'PHP %s %s: %s',
+                __('PHP %s %s: %s', self::getTextDomain()),
                 self::$phpVersionOperator,
                 self::$phpVersion,
-                (self::$phpVersion_check ? '<span style="color:green">&check;</span>' : '<span style="color:red">&times;</span>')
+                (self::$phpVersion_check ? __('<span style="color:green">&check;</span>', self::getTextDomain()) : (
+                    __('<span style="color:red">&times;</span>', self::getTextDomain())
+                ))
             );
         }
 
         if ( self::$wpVersion ) {
             $list []= sprintf(
-                'WP %s %s: %s',
+                __('WP %s %s: %s', self::getTextDomain()),
                 self::$wpVersionOperator,
                 self::$wpVersion,
-                (self::$wpVersion_check ? '<span style="color:green">&check;</span>' : '<span style="color:red">&times;</span>')
+                (self::$wpVersion_check ? __('<span style="color:green">&check;</span>', self::getTextDomain()) : (
+                    __('<span style="color:red">&times;</span>', self::getTextDomain())
+                ))
             );
         }
 
         if ( $list ) {
-            self::$errorMessage .= sprintf( ' [%s]', join($list, ', ') );
+            self::$errorMessage .= sprintf( __(' [%s]', self::getTextDomain()), join($list, ', ') );
         }
 
         return self::getInstance();
@@ -219,7 +236,7 @@ class CompatCheckWP
 
     public static function errorNotice()
     {
-        if ( self::isNetworkActive() && !is_super_admin() )
+        if ( self::isNetworkActive() && ! is_super_admin() )
             return;
 
         if ( !self::$errorMessage ) {
@@ -230,5 +247,19 @@ class CompatCheckWP
             '<div class="error notice is-dismissible"><p>%s</p></div>',
             self::$errorMessage
         );
+    }
+
+    static function i18n()
+    {
+        return load_plugin_textdomain(
+            self::getTextDomain(),
+            false,
+            str_replace(trailingslashit(WP_PLUGIN_DIR), '', __DIR__ ) . '/languages'
+        );
+    }
+
+    private static function getTextDomain()
+    {
+        return isset( self::$textdomain ) && self::$textdomain ? self::$textdomain : 'compatcheckwp';
     }
 }
